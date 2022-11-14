@@ -2,6 +2,21 @@ import React from "react";
 import { format } from "date-fns/esm";
 const AppointmentModal = ({ appointmentModalData, selectedDate }) => {
   const { name, slots } = appointmentModalData;
+  const handleBooking = (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const slot = form.slot.value;
+    const name = form.name.value;
+    const number = form.number.value;
+    const email = form.email.value;
+    const submittedData = {
+      name: name,
+      slot: slot,
+      number: number,
+      email: email,
+    };
+    console.log(submittedData);
+  };
   return (
     <>
       <input type="checkbox" id="appointment-modal" className="modal-toggle" />
@@ -14,30 +29,43 @@ const AppointmentModal = ({ appointmentModalData, selectedDate }) => {
             ✕
           </label>
           <h3 className="text-lg font-bold">{name}</h3>
-          <div className="grid grid-cols-1 gap-4 py-4">
+          <form
+            onSubmit={handleBooking}
+            className="grid grid-cols-1 gap-4 py-4"
+          >
             <input
               type="text"
               value={format(selectedDate, "PP")}
               className="input input-bordered w-full"
               disabled
             />
-            <select className="select select-bordered w-full">
-              {slots.map((slot) => (
-                <option value={slot}>{slot}</option>
+            <select name="slot" className="select select-bordered w-full">
+              {slots.map((slot, i) => (
+                <option value={slot} key={i}>
+                  {slot}
+                </option>
               ))}
             </select>
             <input
+              name="name"
               type="text"
-              placeholder="Type here"
+              placeholder="Full Name"
               className="input input-bordered w-full"
             />
             <input
-              type="text"
-              placeholder="Type here"
+              name="number"
+              type="number"
+              placeholder="Phone Number"
+              className="input input-bordered w-full"
+            />
+            <input
+              name="email"
+              type="email"
+              placeholder="Email"
               className="input input-bordered w-full"
             />
             <button className="btn w-full">Submit</button>
-          </div>
+          </form>
         </div>
       </div>
     </>

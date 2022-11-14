@@ -12,7 +12,6 @@ const AppointmentData = ({ selectedDate, setSelectedDate }) => {
       .then((res) => res.json())
       .then((data) => setAppointmentOptions(data));
   }, []);
-  console.log(appointmentOptions);
   return (
     <section>
       <p className="text-center">
@@ -21,7 +20,7 @@ const AppointmentData = ({ selectedDate, setSelectedDate }) => {
       <div className="grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 gap-6">
         {appointmentOptions.map((option) => (
           <AppointmentOptions
-            key={option.id}
+            key={option._id}
             option={option}
             setAppointmentModalData={setAppointmentModalData}
           ></AppointmentOptions>
