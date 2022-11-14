@@ -1,7 +1,7 @@
 import React from "react";
-
-const AppointmentModal = ({ appointmentModalData }) => {
-  const { name } = appointmentModalData;
+import { format } from "date-fns/esm";
+const AppointmentModal = ({ appointmentModalData, selectedDate }) => {
+  const { name, slots } = appointmentModalData;
   return (
     <>
       <input type="checkbox" id="appointment-modal" className="modal-toggle" />
@@ -14,10 +14,30 @@ const AppointmentModal = ({ appointmentModalData }) => {
             ✕
           </label>
           <h3 className="text-lg font-bold">{name}</h3>
-          <p className="py-4">
-            You've been selected for a chance to get one year of subscription to
-            use Wikipedia for free!
-          </p>
+          <div className="grid grid-cols-1 gap-4 py-4">
+            <input
+              type="text"
+              value={format(selectedDate, "PP")}
+              className="input input-bordered w-full"
+              disabled
+            />
+            <select className="select select-bordered w-full">
+              {slots.map((slot) => (
+                <option value={slot}>{slot}</option>
+              ))}
+            </select>
+            <input
+              type="text"
+              placeholder="Type here"
+              className="input input-bordered w-full"
+            />
+            <input
+              type="text"
+              placeholder="Type here"
+              className="input input-bordered w-full"
+            />
+            <button className="btn w-full">Submit</button>
+          </div>
         </div>
       </div>
     </>

@@ -30,6 +30,7 @@ const AppointmentData = ({ selectedDate, setSelectedDate }) => {
       {appointmentModalData && (
         <AppointmentModal
           appointmentModalData={appointmentModalData}
+          selectedDate={selectedDate}
         ></AppointmentModal>
       )}
     </section>
