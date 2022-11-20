@@ -1,17 +1,31 @@
+import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns/esm";
 import React, { useEffect, useState } from "react";
+import Loading from "../Shared/Loading/Loading";
 import AppointmentOptions from "./AppointmentOptions";
 import AppointmentModal from "./Modal/AppointmentModal";
 
 const AppointmentData = ({ selectedDate, setSelectedDate }) => {
-  const [appointmentOptions, setAppointmentOptions] = useState([]);
+  // const [appointmentOptions, setAppointmentOptions] = useState([]);
   const [appointmentModalData, setAppointmentModalData] = useState(null);
-
-  useEffect(() => {
-    fetch("appointmentOptions.json")
-      .then((res) => res.json())
-      .then((data) => setAppointmentOptions(data));
-  }, []);
+  const date = format(selectedDate, "PP");
+  const {
+    data: appointmentOptions = [],
+    refetch,
+    isLoading,
+  } = useQuery({
+    queryKey: ["appointmentOptions", date],
+    queryFn: async () => {
+      const res = await fetch(
+        `http://localhost:5000/appointmentOptions?date=${date}`
+      );
+      const data = await res.json();
+      return data;
+    },
+  });
+  if (isLoading) {
+    return <Loading></Loading>;
+  }
   return (
     <section>
       <p className="text-center">
@@ -30,6 +44,8 @@ const AppointmentData = ({ selectedDate, setSelectedDate }) => {
         <AppointmentModal
           appointmentModalData={appointmentModalData}
           selectedDate={selectedDate}
+          setAppointmentModalData={setAppointmentModalData}
+          refetch={refetch}
         ></AppointmentModal>
       )}
     </section>

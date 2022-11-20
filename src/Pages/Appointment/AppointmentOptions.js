@@ -1,6 +1,7 @@
 import React from "react";
 const AppointmentOptions = ({ option, setAppointmentModalData }) => {
   const { name, slots } = option;
+
   return (
     <div className="card shadow-xl">
       <div className="card-body text-center">

@@ -1,21 +1,50 @@
-import React from "react";
+import React, { useContext } from "react";
 import { format } from "date-fns/esm";
-const AppointmentModal = ({ appointmentModalData, selectedDate }) => {
+import { AuthContext } from "../../../contexts/AuthProvider/AuthProvider";
+import toast from "react-hot-toast";
+const AppointmentModal = ({
+  appointmentModalData,
+  selectedDate,
+  setAppointmentModalData,
+  refetch,
+}) => {
+  const { user } = useContext(AuthContext);
   const { name, slots } = appointmentModalData;
+  const date = format(selectedDate, "PP");
   const handleBooking = (e) => {
     e.preventDefault();
     const form = e.target;
     const slot = form.slot.value;
-    const name = form.name.value;
+    const patientName = form.name.value;
     const number = form.number.value;
     const email = form.email.value;
     const submittedData = {
-      name: name,
+      patientName: patientName,
+      treatment: name,
       slot: slot,
       number: number,
+      appointmentDate: date,
       email: email,
     };
     console.log(submittedData);
+    fetch("http://localhost:5000/bookings", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(submittedData),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        if (data.acknowledged) {
+          setAppointmentModalData(null);
+          toast.success("Booking confirmed");
+          refetch();
+        } else {
+          toast.error(data.message);
+        }
+      });
   };
   return (
     <>
@@ -47,10 +76,12 @@ const AppointmentModal = ({ appointmentModalData, selectedDate }) => {
               ))}
             </select>
             <input
+              defaultValue={user?.displayName}
               name="name"
               type="text"
               placeholder="Full Name"
               className="input input-bordered w-full"
+              disabled
             />
             <input
               name="number"
@@ -59,10 +90,12 @@ const AppointmentModal = ({ appointmentModalData, selectedDate }) => {
               className="input input-bordered w-full"
             />
             <input
+              defaultValue={user?.email}
               name="email"
               type="email"
               placeholder="Email"
               className="input input-bordered w-full"
+              disabled
             />
             <button className="btn w-full">Submit</button>
           </form>

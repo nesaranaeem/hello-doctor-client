@@ -17,7 +17,11 @@ const Hero = () => {
         }}
       >
         <div className="hero-content flex-col lg:flex-row-reverse">
-          <img src={chair} className="rounded-lg w-1/2 shadow-2xl" alt="" />
+          <img
+            src={chair}
+            className="rounded-lg w-auto lg:w-1/2 shadow-2xl"
+            alt=""
+          />
           <div>
             <h1 className="text-5xl font-bold">{heroTitle}</h1>
             <p className="py-6">{heroDescription}</p>

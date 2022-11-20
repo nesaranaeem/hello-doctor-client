@@ -1,23 +1,45 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../contexts/AuthProvider/AuthProvider";
+import useToken from "../../hooks/useToken";
 const Login = () => {
+  const { loginUserEmailPassword } = useContext(AuthContext);
   const {
     register,
     formState: { errors },
     handleSubmit,
   } = useForm();
   const [loginData, setloginData] = useState("");
-  console.log(loginData);
+  const [loginError, setLoginError] = useState("");
+  const [loginUserEmail, setLoginUserEmail] = useState("");
+  const [token] = useToken(loginUserEmail);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const from = location.state?.from?.pathname || "/";
+  if (token) {
+    navigate(from, { replace: true });
+  }
+  const handleLogin = (loginData) => {
+    setLoginError("");
+    console.log(loginData);
+    loginUserEmailPassword(loginData.email, loginData.password)
+      .then((res) => {
+        const user = res.user;
+        setLoginUserEmail(loginData.email);
+      })
+      .catch((err) => {
+        console.log(err.message);
+        setLoginError(err.message);
+      });
+  };
   return (
     <div>
       <div className="hero-content flex-col">
         <form
           className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100"
-          onSubmit={handleSubmit((loginData) =>
-            setloginData(JSON.stringify(loginData))
-          )}
+          onSubmit={handleSubmit(handleLogin)}
         >
           <div className="card-body">
             <h3 className="text-center text-2xl">Login</h3>
@@ -33,11 +55,6 @@ const Login = () => {
                 placeholder="email"
                 className="input input-bordered"
               />
-              {errors.email && (
-                <p className="label-text-alt mt-1 text-red-700">
-                  {errors.email?.message}
-                </p>
-              )}
             </div>
             <div className="form-control">
               <label className="label">
@@ -55,10 +72,8 @@ const Login = () => {
                 placeholder="password"
                 className="input input-bordered"
               />
-              {errors.password && (
-                <p className="label-text-alt mt-1 text-red-700">
-                  {errors.password?.message}
-                </p>
+              {loginError && (
+                <p className="label-text-alt mt-1 text-red-700">{loginError}</p>
               )}
               <label className="label">
                 <Link to="/forgot" className="label-text-alt link link-hover">

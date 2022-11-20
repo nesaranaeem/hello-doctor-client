@@ -1,27 +1,73 @@
-import React from "react";
+import { data } from "autoprefixer";
+import React, { useContext } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../contexts/AuthProvider/AuthProvider";
+import useToken from "../../hooks/useToken";
 
 const Signup = () => {
+  const { signUp, updateUser } = useContext(AuthContext);
   const {
     register,
-    formState: { errors },
     handleSubmit,
+    formState: { errors },
   } = useForm();
   const [signupData, setsignupData] = useState("");
-  console.log(signupData);
+  const [createdUserEmail, setCreatedUserEmail] = useState("");
+  const [token] = useToken(createdUserEmail);
+  const navigate = useNavigate();
+  if (token) {
+    navigate("/");
+  }
+  const handleSignup = (signupData) => {
+    console.log(signupData);
+    signUp(signupData.email, signupData.password)
+      .then((res) => {
+        const user = res.user;
+        const userInfo = {
+          displayName: signupData.name,
+        };
+        updateUser(userInfo)
+          .then(() => {
+            saveUser(signupData.name, signupData.email);
+            toast("User Created Successfully.");
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+        console.log(user);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const saveUser = (name, email) => {
+    const user = { name, email };
+    fetch("http://localhost:5000/users", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(user),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setCreatedUserEmail(email);
+      });
+  };
+
   return (
     <div>
       <div className="hero-content flex-col">
         <form
           className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100"
-          onSubmit={handleSubmit((signupData) =>
-            setsignupData(JSON.stringify(signupData))
-          )}
+          onSubmit={handleSubmit(handleSignup)}
         >
           <div className="card-body">
-            <h3 className="text-center text-2xl">Login</h3>
+            <h3 className="text-center text-2xl">Sign Up</h3>
             <div className="form-control mt-2">
               <label className="label">
                 <span className="label-text">Name</span>
@@ -87,7 +133,7 @@ const Signup = () => {
             </div>
 
             <div className="form-control mt-2">
-              <input className="btn" value="Login" type="submit" />
+              <input className="btn" value="Signup" type="submit" />
             </div>
             <p>
               Already have an account?
