@@ -1,6 +1,6 @@
 import React from "react";
 const AppointmentOptions = ({ option, setAppointmentModalData }) => {
-  const { name, slots } = option;
+  const { name, slots, price } = option;
 
   return (
     <div className="card shadow-xl">
@@ -10,6 +10,7 @@ const AppointmentOptions = ({ option, setAppointmentModalData }) => {
         <p>
           {slots.length} {slots.length > 1 ? "Spaces" : "Space"} Available
         </p>
+        <small>Price: ${price}</small>
         <div className="card-actions justify-center">
           <label
             htmlFor="appointment-modal"

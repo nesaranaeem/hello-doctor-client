@@ -9,7 +9,7 @@ const AppointmentModal = ({
   refetch,
 }) => {
   const { user } = useContext(AuthContext);
-  const { name, slots } = appointmentModalData;
+  const { name, slots, price } = appointmentModalData;
   const date = format(selectedDate, "PP");
   const handleBooking = (e) => {
     e.preventDefault();
@@ -21,13 +21,14 @@ const AppointmentModal = ({
     const submittedData = {
       patientName: patientName,
       treatment: name,
+      price: price,
       slot: slot,
       number: number,
       appointmentDate: date,
       email: email,
     };
     console.log(submittedData);
-    fetch("http://localhost:5000/bookings", {
+    fetch("http://localhost:3000/bookings", {
       method: "POST",
       headers: {
         "content-type": "application/json",

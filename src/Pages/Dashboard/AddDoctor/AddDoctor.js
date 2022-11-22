@@ -32,7 +32,7 @@ const AddDoctor = () => {
             doctorSpeciality: data.speciality,
             doctorImage: imageData.data.url,
           };
-          fetch("http://localhost:5000/doctors", {
+          fetch("http://localhost:3000/doctors", {
             method: "POST",
             headers: {
               "content-type": "application/json",
@@ -54,7 +54,7 @@ const AddDoctor = () => {
   const { data: specialities, isLoading } = useQuery({
     queryKey: ["speciality"],
     queryFn: async () => {
-      const res = await fetch("http://localhost:5000/doctor-speciality");
+      const res = await fetch("http://localhost:3000/doctor-speciality");
       const data = await res.json();
       return data;
     },

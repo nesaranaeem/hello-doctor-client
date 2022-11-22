@@ -9,7 +9,7 @@ const ManageDoctors = () => {
     setDeletingDoctor(null);
   };
   const handleDeleteDoctor = (doctor) => {
-    fetch(`http://localhost:5000/doctors/${doctor._id}`, {
+    fetch(`http://localhost:3000/doctors/${doctor._id}`, {
       method: "DELETE",
       headers: {
         authorization: `bearer ${localStorage.getItem("accessToken")}`,
@@ -31,7 +31,7 @@ const ManageDoctors = () => {
     queryKey: ["doctors"],
     queryFn: async () => {
       try {
-        const res = await fetch("http://localhost:5000/doctors", {
+        const res = await fetch("http://localhost:3000/doctors", {
           headers: {
             authorization: `bearer ${localStorage.getItem("accessToken")}`,
           },
